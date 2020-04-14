@@ -75,3 +75,7 @@ extensions/cronet/jniLibs/*
 !extensions/cronet/jniLibs/README.md
 extensions/cronet/libs/*
 !extensions/cronet/libs/README.md
+
+#vp9
+extensions/vp9/.c**
+extensions/vp9/buildout
