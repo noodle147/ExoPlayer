@@ -1,0 +1,63 @@
+{
+  "variant": {
+    "module": {
+      "rootBuildGradleFolder": "/media/zx/UBUNTU/workspace/ExoPlayer",
+      "sdkFolder": "/home/zx/Android/Sdk",
+      "isNativeCompilerSettingsCacheEnabled": false,
+      "isBuildOnlyTargetAbiEnabled": true,
+      "splitsAbiFilterSet": [],
+      "intermediatesFolder": "/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/buildout/intermediates",
+      "gradleModulePathName": ":extension-vp9",
+      "moduleRootFolder": "/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9",
+      "makeFile": "/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/src/main/jni/Android.mk",
+      "buildSystem": "NDK_BUILD",
+      "compilerSettingsCacheFolder": "/media/zx/UBUNTU/workspace/ExoPlayer/.cxx",
+      "cxxFolder": "/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/.cxx",
+      "ndkFolder": "/media/zx/UBUNTU/Developer/android-ndk-r14b",
+      "ndkVersion": "14.1.3816874",
+      "ndkSupportedAbiList": [
+        "ARMEABI",
+        "ARMEABI_V7A",
+        "ARM64_V8A",
+        "X86",
+        "X86_64",
+        "MIPS",
+        "MIPS64"
+      ],
+      "ndkDefaultAbiList": [
+        "ARMEABI",
+        "ARMEABI_V7A",
+        "ARM64_V8A",
+        "X86",
+        "X86_64",
+        "MIPS",
+        "MIPS64"
+      ],
+      "cmakeToolchainFile": "."
+    },
+    "buildSystemArgumentList": [],
+    "cFlagList": [],
+    "cppFlagsList": [],
+    "variantName": "release",
+    "soFolder": "/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/buildout/intermediates/ndkBuild/release/lib",
+    "objFolder": "/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/buildout/intermediates/ndkBuild/release/obj/local",
+    "jsonFolder": "/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/.cxx/ndkBuild/release",
+    "gradleBuildOutputFolder": "/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/.cxx/cxx/release",
+    "isDebuggableEnabled": false,
+    "validAbiList": [
+      "ARMEABI_V7A"
+    ],
+    "buildTargetSet": []
+  },
+  "abi": "ARMEABI_V7A",
+  "abiPlatformVersion": 16,
+  "cxxBuildFolder": "/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/.cxx/ndkBuild/release/armeabi-v7a",
+  "jsonFile": "/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/.cxx/ndkBuild/release/armeabi-v7a/android_gradle_build.json",
+  "gradleBuildOutputFolder": "/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/.cxx/cxx/release/armeabi-v7a",
+  "objFolder": "/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/buildout/intermediates/ndkBuild/release/obj/local/armeabi-v7a",
+  "buildCommandFile": "/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/.cxx/ndkBuild/release/armeabi-v7a/build_command.txt",
+  "buildOutputFile": "/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/.cxx/ndkBuild/release/armeabi-v7a/build_output.txt",
+  "modelOutputFile": "/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/.cxx/ndkBuild/release/armeabi-v7a/build_model.json",
+  "jsonGenerationLoggingRecordFile": "/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/.cxx/ndkBuild/release/armeabi-v7a/json_generation_record.json",
+  "compileCommandsJsonFile": "/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/.cxx/ndkBuild/release/armeabi-v7a/compile_commands.json"
+}

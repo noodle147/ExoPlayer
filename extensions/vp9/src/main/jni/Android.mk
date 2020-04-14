@@ -20,7 +20,7 @@ LIBVPX_ROOT := $(WORKING_DIR)/libvpx
 
 # build libvpx.so
 LOCAL_PATH := $(WORKING_DIR)
-include libvpx.mk
+include $(LOCAL_PATH)/libvpx.mk
 
 # build libvpxV2JNI.so
 include $(CLEAR_VARS)
@@ -29,6 +29,34 @@ LOCAL_MODULE := libvpxV2JNI
 LOCAL_ARM_MODE := arm
 LOCAL_CPP_EXTENSION := .cc
 LOCAL_SRC_FILES := vpx_jni.cc
+
+
+# #libyuv
+LOCAL_C_INCLUDES +=$(LOCAL_PATH)/libvpx/third_party/libyuv/include
+LOCAL_SRC_FILES +=  $(LOCAL_PATH)/libvpx/third_party/libyuv/source/cpu_id.cc \
+                $(LOCAL_PATH)/libvpx/third_party/libyuv/source/planar_functions.cc \
+                $(LOCAL_PATH)/libvpx/third_party/libyuv/source/row_any.cc \
+                $(LOCAL_PATH)/libvpx/third_party/libyuv/source/row_common.cc \
+                $(LOCAL_PATH)/libvpx/third_party/libyuv/source/row_gcc.cc \
+                $(LOCAL_PATH)/libvpx/third_party/libyuv/source/row_msa.cc \
+                $(LOCAL_PATH)/libvpx/third_party/libyuv/source/row_neon.cc \
+                $(LOCAL_PATH)/libvpx/third_party/libyuv/source/row_neon64.cc \
+                $(LOCAL_PATH)/libvpx/third_party/libyuv/source/row_win.cc \
+                $(LOCAL_PATH)/libvpx/third_party/libyuv/source/scale.cc \
+                $(LOCAL_PATH)/libvpx/third_party/libyuv/source/scale_any.cc \
+                $(LOCAL_PATH)/libvpx/third_party/libyuv/source/scale_common.cc \
+                $(LOCAL_PATH)/libvpx/third_party/libyuv/source/scale_gcc.cc \
+                $(LOCAL_PATH)/libvpx/third_party/libyuv/source/scale_msa.cc \
+                $(LOCAL_PATH)/libvpx/third_party/libyuv/source/scale_neon.cc \
+                $(LOCAL_PATH)/libvpx/third_party/libyuv/source/scale_neon64.cc \
+                $(LOCAL_PATH)/libvpx/third_party/libyuv/source/scale_win.cc \
+                $(LOCAL_PATH)/libvpx/third_party/libyuv/source/convert_from_argb.cc \
+                $(LOCAL_PATH)/libvpx/third_party/libyuv/source/convert.cc \
+                $(LOCAL_PATH)/libvpx/third_party/libyuv/source/convert_from.cc \
+                $(LOCAL_PATH)/libvpx/third_party/libyuv/source/convert_argb.cc \
+                 $(LOCAL_PATH)/libvpx/third_party/libyuv/source/video_common.cc \
+
+
 LOCAL_LDLIBS := -llog -lz -lm -landroid
 LOCAL_SHARED_LIBRARIES := libvpx
 LOCAL_STATIC_LIBRARIES := cpufeatures

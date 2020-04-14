@@ -62,6 +62,7 @@ public class DemoApplication extends Application {
   private DownloadTracker downloadTracker;
   private DownloadNotificationHelper downloadNotificationHelper;
 
+
   @Override
   public void onCreate() {
     super.onCreate();
@@ -87,12 +88,12 @@ public class DemoApplication extends Application {
 
   public RenderersFactory buildRenderersFactory(boolean preferExtensionRenderer) {
     @DefaultRenderersFactory.ExtensionRendererMode
-    int extensionRendererMode =
-        useExtensionRenderers()
-            ? (preferExtensionRenderer
-                ? DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER
-                : DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON)
-            : DefaultRenderersFactory.EXTENSION_RENDERER_MODE_OFF;
+    int extensionRendererMode =DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER;
+//        useExtensionRenderers()
+//            ? (preferExtensionRenderer
+//                ? DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER
+//                : DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON)
+//            : DefaultRenderersFactory.EXTENSION_RENDERER_MODE_OFF;
     return new DefaultRenderersFactory(/* context= */ this)
         .setExtensionRendererMode(extensionRendererMode);
   }

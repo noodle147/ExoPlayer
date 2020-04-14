@@ -33,7 +33,7 @@
 #define VPX_CODEC_DISABLE_COMPAT 1
 #include "vpx/vpx_decoder.h"
 #include "vpx/vp8dx.h"
-
+#include "libyuv/convert_argb.h"
 #define LOG_TAG "vpx_jni"
 #define LOGE(...) ((void)__android_log_print(ANDROID_LOG_ERROR, LOG_TAG, \
                                              __VA_ARGS__))
@@ -64,15 +64,17 @@ static jmethodID initForPrivateFrame;
 static jfieldID dataField;
 static jfieldID outputModeField;
 static jfieldID decoderPrivateField;
+static jfieldID decoderPrivateAlphaField;
 
 // android.graphics.ImageFormat.YV12.
-static const int kHalPixelFormatYV12 = 0x32315659;
+//static const int kHalPixelFormatYV12 = 0x32315659;
+static const int kHalPixelFormatYV12 = WINDOW_FORMAT_RGBA_8888;
 static const int kDecoderPrivateBase = 0x100;
 static int errorCode;
 
-jint JNI_OnLoad(JavaVM* vm, void* reserved) {
-  JNIEnv* env;
-  if (vm->GetEnv(reinterpret_cast<void**>(&env), JNI_VERSION_1_6) != JNI_OK) {
+jint JNI_OnLoad(JavaVM *vm, void *reserved) {
+  JNIEnv *env;
+  if (vm->GetEnv(reinterpret_cast<void **>(&env), JNI_VERSION_1_6) != JNI_OK) {
     return -1;
   }
   return JNI_VERSION_1_6;
@@ -95,7 +97,7 @@ static int convert_16_to_8_neon(const vpx_image_t* const img, jbyte* const data,
   // In units of uint16_t, so /2 from raw stride
   const int srcStride = img->stride[VPX_PLANE_Y] / 2;
   const int dstStride = img->stride[VPX_PLANE_Y];
-
+vpx_to_rgba(img);
   for (int y = 0; y < img->d_h; y++) {
     const uint16_t* src = srcBase;
     uint8_t* dst = dstBase;
@@ -244,16 +246,16 @@ static int convert_16_to_8_neon(const vpx_image_t* const img, jbyte* const data,
 
 #endif  // __ARM_NEON__
 
-static void convert_16_to_8_standard(const vpx_image_t* const img,
-                                     jbyte* const data, const int32_t uvHeight,
+static void convert_16_to_8_standard(const vpx_image_t *const img,
+                                     jbyte *const data, const int32_t uvHeight,
                                      const int32_t yLength,
                                      const int32_t uvLength) {
   // Y
   int sampleY = 0;
   for (int y = 0; y < img->d_h; y++) {
-    const uint16_t* srcBase = reinterpret_cast<uint16_t*>(
+    const uint16_t *srcBase = reinterpret_cast<uint16_t *>(
         img->planes[VPX_PLANE_Y] + img->stride[VPX_PLANE_Y] * y);
-    int8_t* destBase = data + img->stride[VPX_PLANE_Y] * y;
+    int8_t *destBase = data + img->stride[VPX_PLANE_Y] * y;
     for (int x = 0; x < img->d_w; x++) {
       // Lightweight dither. Carryover the remainder of each 10->8 bit
       // conversion to the next pixel.
@@ -267,12 +269,12 @@ static void convert_16_to_8_standard(const vpx_image_t* const img,
   int sampleV = 0;
   const int32_t uvWidth = (img->d_w + 1) / 2;
   for (int y = 0; y < uvHeight; y++) {
-    const uint16_t* srcUBase = reinterpret_cast<uint16_t*>(
+    const uint16_t *srcUBase = reinterpret_cast<uint16_t *>(
         img->planes[VPX_PLANE_U] + img->stride[VPX_PLANE_U] * y);
-    const uint16_t* srcVBase = reinterpret_cast<uint16_t*>(
+    const uint16_t *srcVBase = reinterpret_cast<uint16_t *>(
         img->planes[VPX_PLANE_V] + img->stride[VPX_PLANE_V] * y);
-    int8_t* destUBase = data + yLength + img->stride[VPX_PLANE_U] * y;
-    int8_t* destVBase =
+    int8_t *destUBase = data + yLength + img->stride[VPX_PLANE_U] * y;
+    int8_t *destVBase =
         data + yLength + uvLength + img->stride[VPX_PLANE_V] * y;
     for (int x = 0; x < uvWidth; x++) {
       // Lightweight dither. Carryover the remainder of each 10->8 bit
@@ -291,7 +293,7 @@ struct JniFrameBuffer {
   friend class JniBufferManager;
 
   int stride[4];
-  uint8_t* planes[4];
+  uint8_t *planes[4];
   int d_w;
   int d_h;
 
@@ -304,10 +306,10 @@ struct JniFrameBuffer {
 class JniBufferManager {
   static const int MAX_FRAMES = 32;
 
-  JniFrameBuffer* all_buffers[MAX_FRAMES];
+  JniFrameBuffer *all_buffers[MAX_FRAMES];
   int all_buffer_count = 0;
 
-  JniFrameBuffer* free_buffers[MAX_FRAMES];
+  JniFrameBuffer *free_buffers[MAX_FRAMES];
   int free_buffer_count = 0;
 
   pthread_mutex_t mutex;
@@ -321,21 +323,21 @@ class JniBufferManager {
     }
   }
 
-  int get_buffer(size_t min_size, vpx_codec_frame_buffer_t* fb) {
+  int get_buffer(size_t min_size, vpx_codec_frame_buffer_t *fb) {
     pthread_mutex_lock(&mutex);
-    JniFrameBuffer* out_buffer;
+    JniFrameBuffer *out_buffer;
     if (free_buffer_count) {
       out_buffer = free_buffers[--free_buffer_count];
       if (out_buffer->vpx_fb.size < min_size) {
         free(out_buffer->vpx_fb.data);
-        out_buffer->vpx_fb.data = (uint8_t*)malloc(min_size);
+        out_buffer->vpx_fb.data = (uint8_t *) malloc(min_size);
         out_buffer->vpx_fb.size = min_size;
       }
     } else {
       out_buffer = new JniFrameBuffer();
       out_buffer->id = all_buffer_count;
       all_buffers[all_buffer_count++] = out_buffer;
-      out_buffer->vpx_fb.data = (uint8_t*)malloc(min_size);
+      out_buffer->vpx_fb.data = (uint8_t *) malloc(min_size);
       out_buffer->vpx_fb.size = min_size;
       out_buffer->vpx_fb.priv = &out_buffer->id;
     }
@@ -352,7 +354,7 @@ class JniBufferManager {
     return retVal;
   }
 
-  JniFrameBuffer* get_buffer(int id) const {
+  JniFrameBuffer *get_buffer(int id) const {
     if (id < 0 || id >= all_buffer_count) {
       LOGE("JniBufferManager get_buffer invalid id %d.", id);
       return NULL;
@@ -376,7 +378,7 @@ class JniBufferManager {
       return -1;
     }
     pthread_mutex_lock(&mutex);
-    JniFrameBuffer* buffer = all_buffers[id];
+    JniFrameBuffer *buffer = all_buffers[id];
     if (!buffer->ref_count) {
       LOGE("JniBufferManager release, buffer already released.");
       pthread_mutex_unlock(&mutex);
@@ -402,7 +404,7 @@ struct JniCtx {
     }
   }
 
-  void acquire_native_window(JNIEnv* env, jobject new_surface) {
+  void acquire_native_window(JNIEnv *env, jobject new_surface) {
     if (surface != new_surface) {
       if (native_window) {
         ANativeWindow_release(native_window);
@@ -413,36 +415,45 @@ struct JniCtx {
     }
   }
 
-  JniBufferManager* buffer_manager = NULL;
-  vpx_codec_ctx_t* decoder = NULL;
-  ANativeWindow* native_window = NULL;
+  JniBufferManager *buffer_manager = NULL;
+  vpx_codec_ctx_t *decoder = NULL;
+  vpx_codec_ctx_t *alpha_decoder = NULL;
+  ANativeWindow *native_window = NULL;
   jobject surface = NULL;
   int width = 0;
   int height = 0;
 };
 
-int vpx_get_frame_buffer(void* priv, size_t min_size,
-                         vpx_codec_frame_buffer_t* fb) {
-  JniBufferManager* const buffer_manager =
-      reinterpret_cast<JniBufferManager*>(priv);
+int vpx_get_frame_buffer(void *priv, size_t min_size,
+                         vpx_codec_frame_buffer_t *fb) {
+  JniBufferManager *const buffer_manager =
+      reinterpret_cast<JniBufferManager *>(priv);
   return buffer_manager->get_buffer(min_size, fb);
 }
 
-int vpx_release_frame_buffer(void* priv, vpx_codec_frame_buffer_t* fb) {
-  JniBufferManager* const buffer_manager =
-      reinterpret_cast<JniBufferManager*>(priv);
-  return buffer_manager->release(*(int*)fb->priv);
+int vpx_release_frame_buffer(void *priv, vpx_codec_frame_buffer_t *fb) {
+  JniBufferManager *const buffer_manager =
+      reinterpret_cast<JniBufferManager *>(priv);
+  return buffer_manager->release(*(int *) fb->priv);
 }
 
 DECODER_FUNC(jlong, vpxInit, jboolean disableLoopFilter,
              jboolean enableRowMultiThreadMode, jint threads) {
-  JniCtx* context = new JniCtx();
+  JniCtx *context = new JniCtx();
   context->decoder = new vpx_codec_ctx_t();
+  context->alpha_decoder = new vpx_codec_ctx_t();
   vpx_codec_dec_cfg_t cfg = {0, 0, 0};
   cfg.threads = threads;
   errorCode = 0;
   vpx_codec_err_t err =
       vpx_codec_dec_init(context->decoder, &vpx_codec_vp9_dx_algo, &cfg, 0);
+  if (err) {
+    LOGE("Failed to initialize libvpx decoder, error = %d.", err);
+    errorCode = err;
+    return 0;
+  }
+  err =
+      vpx_codec_dec_init(context->alpha_decoder, &vpx_codec_vp9_dx_algo, &cfg, 0);
   if (err) {
     LOGE("Failed to initialize libvpx decoder, error = %d.", err);
     errorCode = err;
@@ -454,9 +465,18 @@ DECODER_FUNC(jlong, vpxInit, jboolean disableLoopFilter,
   if (err) {
     LOGE("Failed to enable row multi thread mode, error = %d.", err);
   }
+  err = vpx_codec_control(context->alpha_decoder, VP9D_SET_ROW_MT,
+                          enableRowMultiThreadMode);
+  if (err) {
+    LOGE("Failed to enable row multi thread mode, error = %d.", err);
+  }
 #endif
   if (disableLoopFilter) {
     err = vpx_codec_control(context->decoder, VP9_SET_SKIP_LOOP_FILTER, true);
+    if (err) {
+      LOGE("Failed to shut off libvpx loop filter, error = %d.", err);
+    }
+    err = vpx_codec_control(context->alpha_decoder, VP9_SET_SKIP_LOOP_FILTER, true);
     if (err) {
       LOGE("Failed to shut off libvpx loop filter, error = %d.", err);
     }
@@ -466,10 +486,20 @@ DECODER_FUNC(jlong, vpxInit, jboolean disableLoopFilter,
     if (err) {
       LOGE("Failed to enable loop filter optimization, error = %d.", err);
     }
+    err = vpx_codec_control(context->alpha_decoder, VP9D_SET_LOOP_FILTER_OPT, true);
+    if (err) {
+      LOGE("Failed to enable loop filter optimization, error = %d.", err);
+    }
 #endif
   }
   err = vpx_codec_set_frame_buffer_functions(
       context->decoder, vpx_get_frame_buffer, vpx_release_frame_buffer,
+      context->buffer_manager);
+  if (err) {
+    LOGE("Failed to set libvpx frame buffer functions, error = %d.", err);
+  }
+  err = vpx_codec_set_frame_buffer_functions(
+      context->alpha_decoder, vpx_get_frame_buffer, vpx_release_frame_buffer,
       context->buffer_manager);
   if (err) {
     LOGE("Failed to set libvpx frame buffer functions, error = %d.", err);
@@ -487,28 +517,71 @@ DECODER_FUNC(jlong, vpxInit, jboolean disableLoopFilter,
   outputModeField = env->GetFieldID(outputBufferClass, "mode", "I");
   decoderPrivateField =
       env->GetFieldID(outputBufferClass, "decoderPrivate", "I");
+  decoderPrivateAlphaField =
+      env->GetFieldID(outputBufferClass, "decoderPrivateAlpha", "I");
   return reinterpret_cast<intptr_t>(context);
 }
 
 DECODER_FUNC(jlong, vpxDecode, jlong jContext, jobject encoded, jint len) {
-  JniCtx* const context = reinterpret_cast<JniCtx*>(jContext);
-  const uint8_t* const buffer =
-      reinterpret_cast<const uint8_t*>(env->GetDirectBufferAddress(encoded));
+  JniCtx *const context = reinterpret_cast<JniCtx *>(jContext);
+  const uint8_t *const buffer =
+      reinterpret_cast<const uint8_t *>(env->GetDirectBufferAddress(encoded));
   const vpx_codec_err_t status =
       vpx_codec_decode(context->decoder, buffer, len, NULL, 0);
   errorCode = 0;
   if (status != VPX_CODEC_OK) {
-    LOGE("vpx_codec_decode() failed, status= %d", status);
+    LOGE("vpx_codec_decode() failed(vpxDecode), status= %d", status);
     errorCode = status;
     return -1;
   }
   return 0;
 }
 
+DECODER_FUNC(jlong,
+             vpxDecode2,
+             jlong jContext,
+             jobject encoded,
+             jint len,
+             jobject encoded_supplemental_data,
+             jint encoded_supplemental_data_len) {
+  LOGE("vpx_codec_decode() log(vpxDecode2), len= %d,supplemental_len= %d",
+       len,
+       encoded_supplemental_data_len);
+  JniCtx *const context = reinterpret_cast<JniCtx *>(jContext);
+  const uint8_t *const buffer =
+      reinterpret_cast<const uint8_t *>(env->GetDirectBufferAddress(encoded));
+  const vpx_codec_err_t status = vpx_codec_decode(context->decoder, buffer, len, NULL, 0);
+  errorCode = 0;
+  if (status != VPX_CODEC_OK) {
+    LOGE("vpx_codec_decode() failed(vpxDecode2), status= %d", status);
+    errorCode = status;
+    return -1;
+  }
+  if (encoded_supplemental_data_len > 0) {
+    const uint8_t *const supplemental_buffer =
+        reinterpret_cast<const uint8_t *>(env->GetDirectBufferAddress(encoded_supplemental_data));
+    const vpx_codec_err_t supplemental_status =
+        vpx_codec_decode(context->alpha_decoder,
+                         supplemental_buffer,
+                         encoded_supplemental_data_len,
+                         NULL,
+                         0);
+    errorCode = 0;
+    if (supplemental_status != VPX_CODEC_OK) {
+      LOGE("vpx_codec_decode() failed(vpxDecode2), supplemental_status= %d,supplemental_len= %d",
+           supplemental_status,
+           encoded_supplemental_data_len);
+      errorCode = supplemental_status;
+      return -1;
+    }
+  }
+  return 0;
+}
+
 DECODER_FUNC(jlong, vpxSecureDecode, jlong jContext, jobject encoded, jint len,
-    jobject mediaCrypto, jint inputMode, jbyteArray&, jbyteArray&,
-    jint inputNumSubSamples, jintArray numBytesOfClearData,
-    jintArray numBytesOfEncryptedData) {
+             jobject mediaCrypto, jint inputMode, jbyteArray &, jbyteArray &,
+             jint inputNumSubSamples, jintArray numBytesOfClearData,
+             jintArray numBytesOfEncryptedData) {
   // Doesn't support
   // Java client should have checked vpxSupportSecureDecode
   // and avoid calling this
@@ -517,16 +590,19 @@ DECODER_FUNC(jlong, vpxSecureDecode, jlong jContext, jobject encoded, jint len,
 }
 
 DECODER_FUNC(jlong, vpxClose, jlong jContext) {
-  JniCtx* const context = reinterpret_cast<JniCtx*>(jContext);
+  JniCtx *const context = reinterpret_cast<JniCtx *>(jContext);
   vpx_codec_destroy(context->decoder);
+  vpx_codec_destroy(context->alpha_decoder);
   delete context;
   return 0;
 }
 
-DECODER_FUNC(jint, vpxGetFrame, jlong jContext, jobject jOutputBuffer) {
-  JniCtx* const context = reinterpret_cast<JniCtx*>(jContext);
+DECODER_FUNC(jint, vpxGetFrame, jlong jContext, jobject jOutputBuffer, jboolean jIsAlpha) {
+  JniCtx *const context = reinterpret_cast<JniCtx *>(jContext);
   vpx_codec_iter_t iter = NULL;
-  const vpx_image_t* const img = vpx_codec_get_frame(context->decoder, &iter);
+
+  const vpx_image_t *const img = jIsAlpha ? vpx_codec_get_frame(context->alpha_decoder, &iter)
+                                          : vpx_codec_get_frame(context->decoder, &iter);
 
   if (img == NULL) {
     return 1;
@@ -554,7 +630,7 @@ DECODER_FUNC(jint, vpxGetFrame, jlong jContext, jobject jOutputBuffer) {
       case VPX_CS_BT_709:
         colorspace = kColorspaceBT709;
         break;
-    case VPX_CS_BT_2020:
+      case VPX_CS_BT_2020:
         colorspace = kColorspaceBT2020;
         break;
       default:
@@ -571,12 +647,14 @@ DECODER_FUNC(jint, vpxGetFrame, jlong jContext, jobject jOutputBuffer) {
 
     // get pointer to the data buffer.
     const jobject dataObject = env->GetObjectField(jOutputBuffer, dataField);
-    jbyte* const data =
-        reinterpret_cast<jbyte*>(env->GetDirectBufferAddress(dataObject));
+    jbyte *const data =
+        reinterpret_cast<jbyte *>(env->GetDirectBufferAddress(dataObject));
 
     const int32_t uvHeight = (img->d_h + 1) / 2;
     const uint64_t yLength = img->stride[VPX_PLANE_Y] * img->d_h;
     const uint64_t uvLength = img->stride[VPX_PLANE_U] * uvHeight;
+    const uint64_t aLength = yLength;
+
     if (img->fmt == VPX_IMG_FMT_I42016) {  // HBD planar 420.
       // Note: The stride for BT2020 is twice of what we use so this is wasting
       // memory. The long term goal however is to upload half-float/short so
@@ -592,9 +670,13 @@ DECODER_FUNC(jint, vpxGetFrame, jlong jContext, jobject jOutputBuffer) {
       // TODO: This copy can be eliminated by using external frame
       // buffers. This is insignificant for smaller videos but takes ~1.5ms
       // for 1080p clips. So this should eventually be gotten rid of.
-      memcpy(data, img->planes[VPX_PLANE_Y], yLength);
-      memcpy(data + yLength, img->planes[VPX_PLANE_U], uvLength);
-      memcpy(data + yLength + uvLength, img->planes[VPX_PLANE_V], uvLength);
+      if (jIsAlpha) {
+        memcpy(data + yLength + uvLength * 2, img->planes[VPX_PLANE_Y], yLength);
+      } else {
+        memcpy(data, img->planes[VPX_PLANE_Y], yLength);
+        memcpy(data + yLength, img->planes[VPX_PLANE_U], uvLength);
+        memcpy(data + yLength + uvLength, img->planes[VPX_PLANE_V], uvLength);
+      }
     }
   } else if (outputMode == kOutputModeSurfaceYuv) {
     if (img->fmt & VPX_IMG_FMT_HIGHBITDEPTH) {
@@ -604,12 +686,12 @@ DECODER_FUNC(jint, vpxGetFrame, jlong jContext, jobject jOutputBuffer) {
           img->fmt);
       return -1;
     }
-    int id = *(int*)img->fb_priv;
+    int id = *(int *) img->fb_priv;
     context->buffer_manager->add_ref(id);
-    JniFrameBuffer* jfb = context->buffer_manager->get_buffer(id);
-    for (int i = 2; i >= 0; i--) {
+    JniFrameBuffer *jfb = context->buffer_manager->get_buffer(id);
+    for (int i = 3; i >= 0; i--) {
       jfb->stride[i] = img->stride[i];
-      jfb->planes[i] = (uint8_t*)img->planes[i];
+      jfb->planes[i] = (uint8_t *) img->planes[i];
     }
     jfb->d_w = img->d_w;
     jfb->d_h = img->d_h;
@@ -617,25 +699,38 @@ DECODER_FUNC(jint, vpxGetFrame, jlong jContext, jobject jOutputBuffer) {
     if (env->ExceptionCheck()) {
       return -1;
     }
-    env->SetIntField(jOutputBuffer, decoderPrivateField,
-                     id + kDecoderPrivateBase);
+    if (jIsAlpha) {
+      env->SetIntField(jOutputBuffer, decoderPrivateAlphaField,
+                       id + kDecoderPrivateBase);
+    } else {
+      env->SetIntField(jOutputBuffer, decoderPrivateField,
+                       id + kDecoderPrivateBase);
+    }
+
   }
   return 0;
 }
 
 DECODER_FUNC(jint, vpxRenderFrame, jlong jContext, jobject jSurface,
              jobject jOutputBuffer) {
-  JniCtx* const context = reinterpret_cast<JniCtx*>(jContext);
+  JniCtx *const context = reinterpret_cast<JniCtx *>(jContext);
   const int id = env->GetIntField(jOutputBuffer, decoderPrivateField) -
-                 kDecoderPrivateBase;
-  JniFrameBuffer* srcBuffer = context->buffer_manager->get_buffer(id);
+      kDecoderPrivateBase;
+  JniFrameBuffer *srcBuffer = context->buffer_manager->get_buffer(id);
+
+  const int
+      alphaId = env->GetIntField(jOutputBuffer, decoderPrivateAlphaField) - kDecoderPrivateBase;
+
+
   context->acquire_native_window(env, jSurface);
   if (context->native_window == NULL || !srcBuffer) {
     return 1;
   }
   if (context->width != srcBuffer->d_w || context->height != srcBuffer->d_h) {
-    ANativeWindow_setBuffersGeometry(context->native_window, srcBuffer->d_w,
-                                     srcBuffer->d_h, kHalPixelFormatYV12);
+    ANativeWindow_setBuffersGeometry(context->native_window,
+                                     srcBuffer->d_w,
+                                     srcBuffer->d_h,
+                                     kHalPixelFormatYV12);
     context->width = srcBuffer->d_w;
     context->height = srcBuffer->d_h;
   }
@@ -644,51 +739,113 @@ DECODER_FUNC(jint, vpxRenderFrame, jlong jContext, jobject jSurface,
   if (buffer.bits == NULL || result) {
     return -1;
   }
-  // Y
-  const size_t src_y_stride = srcBuffer->stride[VPX_PLANE_Y];
-  int stride = srcBuffer->d_w;
-  const uint8_t* src_base =
-      reinterpret_cast<uint8_t*>(srcBuffer->planes[VPX_PLANE_Y]);
-  uint8_t* dest_base = (uint8_t*)buffer.bits;
-  for (int y = 0; y < srcBuffer->d_h; y++) {
-    memcpy(dest_base, src_base, stride);
-    src_base += src_y_stride;
-    dest_base += buffer.stride;
-  }
-  // UV
-  const int src_uv_stride = srcBuffer->stride[VPX_PLANE_U];
-  const int dest_uv_stride = (buffer.stride / 2 + 15) & (~15);
-  const int32_t buffer_uv_height = (buffer.height + 1) / 2;
-  const int32_t height =
-      std::min((int32_t)(srcBuffer->d_h + 1) / 2, buffer_uv_height);
-  stride = (srcBuffer->d_w + 1) / 2;
-  src_base = reinterpret_cast<uint8_t*>(srcBuffer->planes[VPX_PLANE_U]);
-  const uint8_t* src_v_base =
-      reinterpret_cast<uint8_t*>(srcBuffer->planes[VPX_PLANE_V]);
-  uint8_t* dest_v_base =
-      ((uint8_t*)buffer.bits) + buffer.stride * buffer.height;
-  dest_base = dest_v_base + buffer_uv_height * dest_uv_stride;
-  for (int y = 0; y < height; y++) {
-    memcpy(dest_base, src_base, stride);
-    memcpy(dest_v_base, src_v_base, stride);
-    src_base += src_uv_stride;
-    src_v_base += src_uv_stride;
-    dest_base += dest_uv_stride;
-    dest_v_base += dest_uv_stride;
+
+  uint8_t *dest_base = (uint8_t *) buffer.bits;
+
+  if (kHalPixelFormatYV12 == WINDOW_FORMAT_RGBA_8888) {
+
+    const int src_y_stride = srcBuffer->stride[VPX_PLANE_Y];
+    const int src_uv_stride = srcBuffer->stride[VPX_PLANE_U];
+
+    const uint8_t *src_base = reinterpret_cast<uint8_t *>(srcBuffer->planes[VPX_PLANE_Y]);
+    const uint8_t *src_u_base = reinterpret_cast<uint8_t *>(srcBuffer->planes[VPX_PLANE_U]);
+    const uint8_t *src_v_base = reinterpret_cast<uint8_t *>(srcBuffer->planes[VPX_PLANE_V]);
+//    const uint8_t *src_a_base = reinterpret_cast<uint8_t *>(srcBuffer->planes[VPX_PLANE_ALPHA]);
+    if (alphaId >= 0) {
+      JniFrameBuffer *srcAlphaBuffer = context->buffer_manager->get_buffer(alphaId);
+      const int src_a_stride = srcAlphaBuffer->stride[VPX_PLANE_Y];
+//      LOGE("a:%d %d %d %d ", src_a_stride, src_y_stride, src_uv_stride, kHalPixelFormatYV12);
+      const uint8_t *src_a_base = reinterpret_cast<uint8_t *>(srcAlphaBuffer->planes[VPX_PLANE_Y]);
+      libyuv::I420AlphaToARGB(src_base,
+                              src_y_stride,
+                              src_v_base,
+                              src_uv_stride,
+                              src_u_base,
+                              src_uv_stride,
+                              src_a_base,
+                              src_a_stride,
+                              dest_base,
+                              buffer.stride * 4,
+                              context->width,
+                              context->height,
+                              1);
+    } else {
+//      LOGE(" %d %d %d ", src_y_stride, src_uv_stride, kHalPixelFormatYV12);
+      libyuv::I420ToARGB(src_base,
+                         src_y_stride,
+                         src_v_base,
+                         src_uv_stride,
+                         src_u_base,
+                         src_uv_stride,
+                         dest_base,
+                         buffer.stride * 4,
+                         context->width,
+                         context->height);
+
+    }
+
+
+
+//        memset(srcBuffer->planes[VPX_PLANE_ALPHA],200,src_a_stride*context->height);
+//      memset(srcBuffer->planes[VPX_PLANE_ALPHA],200,src_a_stride*context->height/2);
+
+
+//        libyuv::I420ToARGB(src_base, src_y_stride, src_v_base, src_uv_stride, src_u_base, src_uv_stride, dest_base, context->width*4,context->width,context->height);
+//libyuv::I420ToRGB24(src_base, src_y_stride, src_v_base, src_uv_stride, src_u_base, src_uv_stride, dest_base, context->width*4,context->width,context->height);
+  } else {
+    // Y
+    const size_t src_y_stride = srcBuffer->stride[VPX_PLANE_Y];
+    int stride = srcBuffer->d_w;
+    const uint8_t *src_base =
+        reinterpret_cast<uint8_t *>(srcBuffer->planes[VPX_PLANE_Y]);
+    uint8_t *dest_base = (uint8_t *) buffer.bits;
+    for (int y = 0; y < srcBuffer->d_h; y++) {
+      memcpy(dest_base, src_base, stride);
+      src_base += src_y_stride;
+      dest_base += buffer.stride;
+    }
+    // UV
+    const int src_uv_stride = srcBuffer->stride[VPX_PLANE_U];
+    const int dest_uv_stride = (buffer.stride / 2 + 15) & (~15);
+    const int32_t buffer_uv_height = (buffer.height + 1) / 2;
+    const int32_t height =
+        std::min((int32_t) (srcBuffer->d_h + 1) / 2, buffer_uv_height);
+    stride = (srcBuffer->d_w + 1) / 2;
+    src_base = reinterpret_cast<uint8_t *>(srcBuffer->planes[VPX_PLANE_U]);
+    const uint8_t *src_v_base =
+        reinterpret_cast<uint8_t *>(srcBuffer->planes[VPX_PLANE_V]);
+    uint8_t *dest_v_base =
+        ((uint8_t *) buffer.bits) + buffer.stride * buffer.height;
+    dest_base = dest_v_base + buffer_uv_height * dest_uv_stride;
+    for (int y = 0; y < height; y++) {
+      memcpy(dest_base, src_base, stride);
+      memcpy(dest_v_base, src_v_base, stride);
+      src_base += src_uv_stride;
+      src_v_base += src_uv_stride;
+      dest_base += dest_uv_stride;
+      dest_v_base += dest_uv_stride;
+    }
   }
   return ANativeWindow_unlockAndPost(context->native_window);
 }
 
 DECODER_FUNC(void, vpxReleaseFrame, jlong jContext, jobject jOutputBuffer) {
-  JniCtx* const context = reinterpret_cast<JniCtx*>(jContext);
+  JniCtx *const context = reinterpret_cast<JniCtx *>(jContext);
   const int id = env->GetIntField(jOutputBuffer, decoderPrivateField) -
-                 kDecoderPrivateBase;
+      kDecoderPrivateBase;
   env->SetIntField(jOutputBuffer, decoderPrivateField, -1);
   context->buffer_manager->release(id);
+  const int alphaId = env->GetIntField(jOutputBuffer, decoderPrivateAlphaField) -
+      kDecoderPrivateBase;
+  if (alphaId >= 0) {
+    env->SetIntField(jOutputBuffer, decoderPrivateAlphaField, -1);
+    context->buffer_manager->release(alphaId);
+  }
+
 }
 
 DECODER_FUNC(jstring, vpxGetErrorMessage, jlong jContext) {
-  JniCtx* const context = reinterpret_cast<JniCtx*>(jContext);
+  JniCtx *const context = reinterpret_cast<JniCtx *>(jContext);
   return env->NewStringUTF(vpx_codec_error(context->decoder));
 }
 

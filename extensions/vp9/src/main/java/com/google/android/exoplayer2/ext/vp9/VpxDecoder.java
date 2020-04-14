@@ -38,22 +38,25 @@ import java.nio.ByteBuffer;
   private static final int DECODE_ERROR = -1;
   private static final int DRM_ERROR = -2;
 
-  @Nullable private final ExoMediaCrypto exoMediaCrypto;
+  @Nullable
+  private final ExoMediaCrypto exoMediaCrypto;
   private final long vpxDecContext;
 
-  @Nullable private ByteBuffer lastSupplementalData;
+  @Nullable
+  private ByteBuffer lastSupplementalData;
 
-  @C.VideoOutputMode private volatile int outputMode;
+  @C.VideoOutputMode
+  private volatile int outputMode;
 
   /**
    * Creates a VP9 decoder.
    *
-   * @param numInputBuffers The number of input buffers.
-   * @param numOutputBuffers The number of output buffers.
+   * @param numInputBuffers        The number of input buffers.
+   * @param numOutputBuffers       The number of output buffers.
    * @param initialInputBufferSize The initial size of each input buffer.
-   * @param exoMediaCrypto The {@link ExoMediaCrypto} object required for decoding encrypted
+   * @param exoMediaCrypto         The {@link ExoMediaCrypto} object required for decoding encrypted
    *     content. Maybe null and can be ignored if decoder does not handle encrypted content.
-   * @param threads Number of threads libvpx will use to decode.
+   * @param threads                Number of threads libvpx will use to decode.
    * @throws VpxDecoderException Thrown if an exception occurs when initializing the decoder.
    */
   public VpxDecoder(
@@ -100,6 +103,7 @@ import java.nio.ByteBuffer;
     return new VideoDecoderInputBuffer();
   }
 
+
   @Override
   protected VideoDecoderOutputBuffer createOutputBuffer() {
     return new VideoDecoderOutputBuffer(this::releaseOutputBuffer);
@@ -136,7 +140,9 @@ import java.nio.ByteBuffer;
         ? vpxSecureDecode(vpxDecContext, inputData, inputSize, exoMediaCrypto,
         cryptoInfo.mode, cryptoInfo.key, cryptoInfo.iv, cryptoInfo.numSubSamples,
         cryptoInfo.numBytesOfClearData, cryptoInfo.numBytesOfEncryptedData)
-        : vpxDecode(vpxDecContext, inputData, inputSize);
+        : (inputBuffer.hasSupplementalData() && inputBuffer.supplementalData.limit() > 0
+            ? vpxDecode2(vpxDecContext, inputData, inputSize, inputBuffer.supplementalData,
+            inputBuffer.supplementalData.limit()) : vpxDecode(vpxDecContext, inputData, inputSize));
     if (result != NO_ERROR) {
       if (result == DRM_ERROR) {
         String message = "Drm error: " + vpxGetErrorMessage(vpxDecContext);
@@ -164,11 +170,19 @@ import java.nio.ByteBuffer;
 
     if (!inputBuffer.isDecodeOnly()) {
       outputBuffer.init(inputBuffer.timeUs, outputMode, lastSupplementalData);
-      int getFrameResult = vpxGetFrame(vpxDecContext, outputBuffer);
+      int getFrameResult = vpxGetFrame(vpxDecContext, outputBuffer, false);
       if (getFrameResult == 1) {
         outputBuffer.addFlag(C.BUFFER_FLAG_DECODE_ONLY);
       } else if (getFrameResult == -1) {
         return new VpxDecoderException("Buffer initialization failed.");
+      }
+      if (inputBuffer.hasSupplementalData() && inputBuffer.supplementalData.limit() > 0) {
+        int getFrameAlphaResult = vpxGetFrame(vpxDecContext, outputBuffer, true);
+        if (getFrameAlphaResult == 1) {
+          outputBuffer.addFlag(C.BUFFER_FLAG_DECODE_ONLY);
+        } else if (getFrameAlphaResult == -1) {
+          return new VpxDecoderException("Buffer initialization failed.");
+        }
       }
       outputBuffer.colorInfo = inputBuffer.colorInfo;
     }
@@ -195,7 +209,11 @@ import java.nio.ByteBuffer;
       boolean disableLoopFilter, boolean enableRowMultiThreadMode, int threads);
 
   private native long vpxClose(long context);
+
   private native long vpxDecode(long context, ByteBuffer encoded, int length);
+
+  private native long vpxDecode2(long context, ByteBuffer encoded, int length,
+      ByteBuffer encodedSupplementalData, int encodedSupplementalDataLength);
 
   private native long vpxSecureDecode(
       long context,
@@ -209,7 +227,8 @@ import java.nio.ByteBuffer;
       int[] numBytesOfClearData,
       int[] numBytesOfEncryptedData);
 
-  private native int vpxGetFrame(long context, VideoDecoderOutputBuffer outputBuffer);
+  private native int vpxGetFrame(long context, VideoDecoderOutputBuffer outputBuffer,
+      boolean isAlpha);
 
   /**
    * Renders the frame to the surface. Used with OUTPUT_MODE_SURFACE_YUV only. Must only be called
@@ -225,6 +244,7 @@ import java.nio.ByteBuffer;
   private native int vpxReleaseFrame(long context, VideoDecoderOutputBuffer outputBuffer);
 
   private native int vpxGetErrorCode(long context);
+
   private native String vpxGetErrorMessage(long context);
 
 }

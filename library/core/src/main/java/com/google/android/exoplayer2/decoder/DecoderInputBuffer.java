@@ -112,7 +112,8 @@ public class DecoderInputBuffer extends Buffer {
   @EnsuresNonNull("supplementalData")
   public void resetSupplementalData(int length) {
     if (supplementalData == null || supplementalData.capacity() < length) {
-      supplementalData = ByteBuffer.allocate(length);
+//      supplementalData = ByteBuffer.allocate(length);
+      supplementalData = createReplacementByteBuffer(length);
     } else {
       supplementalData.clear();
     }

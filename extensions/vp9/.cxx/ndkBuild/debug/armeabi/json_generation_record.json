@@ -1,0 +1,42 @@
+[
+  {
+    "level": "INFO",
+    "message": "Start JSON generation. Platform version: 16 min SDK version: armeabi"
+  },
+  {
+    "level": "INFO",
+    "message": "rebuilding JSON /media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/.cxx/ndkBuild/debug/armeabi/android_gradle_build.json due to:"
+  },
+  {
+    "level": "INFO",
+    "message": "- expected json /media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/.cxx/ndkBuild/debug/armeabi/android_gradle_build.json file is not present, will remove stale json folder"
+  },
+  {
+    "level": "INFO",
+    "message": "- missing previous command file /media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/.cxx/ndkBuild/debug/armeabi/build_command.txt, will remove stale json folder"
+  },
+  {
+    "level": "INFO",
+    "message": "- command changed from previous, will remove stale json folder"
+  },
+  {
+    "level": "INFO",
+    "message": "removing stale contents from \u0027/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/.cxx/ndkBuild/debug/armeabi\u0027"
+  },
+  {
+    "level": "INFO",
+    "message": "created folder \u0027/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/.cxx/ndkBuild/debug/armeabi\u0027"
+  },
+  {
+    "level": "INFO",
+    "message": "executing ndkBuild Executable : /media/zx/UBUNTU/Developer/android-ndk-r14b/ndk-build\narguments : \nNDK_PROJECT_PATH\u003dnull\nAPP_BUILD_SCRIPT\u003d/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/src/main/jni/Android.mk\nNDK_APPLICATION_MK\u003d/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/src/main/jni/Application.mk\nAPP_ABI\u003darmeabi\nNDK_ALL_ABIS\u003darmeabi\nNDK_DEBUG\u003d1\nAPP_PLATFORM\u003dandroid-16\nNDK_OUT\u003d/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/buildout/intermediates/ndkBuild/debug/obj\nNDK_LIBS_OUT\u003d/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/buildout/intermediates/ndkBuild/debug/lib\nAPP_SHORT_COMMANDS\u003dfalse\nLOCAL_SHORT_COMMANDS\u003dfalse\n-B\n-n\njvmArgs : \n\n"
+  },
+  {
+    "level": "INFO",
+    "message": "Executable : /media/zx/UBUNTU/Developer/android-ndk-r14b/ndk-build\narguments : \nNDK_PROJECT_PATH\u003dnull\nAPP_BUILD_SCRIPT\u003d/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/src/main/jni/Android.mk\nNDK_APPLICATION_MK\u003d/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/src/main/jni/Application.mk\nAPP_ABI\u003darmeabi\nNDK_ALL_ABIS\u003darmeabi\nNDK_DEBUG\u003d1\nAPP_PLATFORM\u003dandroid-16\nNDK_OUT\u003d/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/buildout/intermediates/ndkBuild/debug/obj\nNDK_LIBS_OUT\u003d/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/buildout/intermediates/ndkBuild/debug/lib\nAPP_SHORT_COMMANDS\u003dfalse\nLOCAL_SHORT_COMMANDS\u003dfalse\n-B\n-n\njvmArgs : \n\n"
+  },
+  {
+    "level": "INFO",
+    "message": "JSON generation completed with problem. Exception: Build command failed.\nError while executing process /media/zx/UBUNTU/Developer/android-ndk-r14b/ndk-build with arguments {NDK_PROJECT_PATH\u003dnull APP_BUILD_SCRIPT\u003d/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/src/main/jni/Android.mk NDK_APPLICATION_MK\u003d/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/src/main/jni/Application.mk APP_ABI\u003darmeabi NDK_ALL_ABIS\u003darmeabi NDK_DEBUG\u003d1 APP_PLATFORM\u003dandroid-16 NDK_OUT\u003d/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/buildout/intermediates/ndkBuild/debug/obj NDK_LIBS_OUT\u003d/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/buildout/intermediates/ndkBuild/debug/lib APP_SHORT_COMMANDS\u003dfalse LOCAL_SHORT_COMMANDS\u003dfalse -B -n}\nrm -f /media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/buildout/intermediates/ndkBuild/debug/lib/armeabi/*\nrm -f /media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/buildout/intermediates/ndkBuild/debug/lib/armeabi/gdbserver\nrm -f /media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/buildout/intermediates/ndkBuild/debug/lib/armeabi/gdb.setup\nmkdir -p /media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/buildout/intermediates/ndkBuild/debug/lib/armeabi\necho [armeabi] \"Gdbserver      \": \"[arm-linux-androideabi] /media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/buildout/intermediates/ndkBuild/debug/lib/armeabi/gdbserver\"\ninstall -p /media/zx/UBUNTU/Developer/android-ndk-r14b/prebuilt/android-arm/gdbserver/gdbserver /media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/buildout/intermediates/ndkBuild/debug/lib/armeabi/gdbserver\necho [armeabi] \"Gdbsetup       \": \"/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/buildout/intermediates/ndkBuild/debug/lib/armeabi/gdb.setup\"\necho \"set solib-search-path /media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/buildout/intermediates/ndkBuild/debug/obj/local/armeabi\" \u003e /media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/buildout/intermediates/ndkBuild/debug/lib/armeabi/gdb.setup\necho \"directory /media/zx/UBUNTU/Developer/android-ndk-r14b/platforms/android-16/arch-arm /media/zx/UBUNTU/Developer/android-ndk-r14b/sources/android/support /media/zx/UBUNTU/Developer/android-ndk-r14b/sources/android/support/include /media/zx/UBUNTU/Developer/android-ndk-r14b/sources/cxx-stl/llvm-libc++ /media/zx/UBUNTU/Developer/android-ndk-r14b/sources/cxx-stl/llvm-libc++abi /media/zx/UBUNTU/Developer/android-ndk-r14b/sources/android/cpufeatures /media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/src/main/jni/libvpx_android_configs/armeabi /media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/src/main/jni/libvpx/third_party/libyuv/include /media/zx/UBUNTU/Developer/android-ndk-r14b/sources/cxx-stl/llvm-libc++/include /media/zx/UBUNTU/Developer/android-ndk-r14b/sources/cxx-stl/llvm-libc++abi/include /media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/src/main/jni/libvpx/vpx\" \u003e\u003e /media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/buildout/intermediates/ndkBuild/debug/lib/armeabi/gdb.setup\n\ncat: /media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/src/main/jni/libvpx_android_configs/armeabi/libvpx_srcs.txt: 没有那个文件或目录\nmake: *** No rule to make target `/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/src/main/jni/libvpx_android_configs/armeabi/vpx_config.c\u0027, needed by `/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/buildout/intermediates/ndkBuild/debug/obj/local/armeabi/objs/vpx/libvpx_android_configs/armeabi/vpx_config.o\u0027.  Stop.\n"
+  }
+]

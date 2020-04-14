@@ -1,5 +1,47 @@
 [
   {
+    "name": "LOCAL VP9",
+    "samples": [
+      {
+        "name": "a.webm",
+        "uri": "asset:///a.webm",
+        "extension": "webm"
+      },{
+        "name": "mov_to_vp9.webm",
+        "uri": "asset:///mov_to_vp9.webm",
+        "extension": "webm"
+      },
+      {
+        "name": "red_ball.webm",
+        "uri": "asset:///red_ball.webm",
+        "extension": "webm"
+      },
+      {
+        "name": "output.webm",
+        "uri": "asset:///output.webm",
+        "extension": "webm"
+      },{
+        "name": "output9.webm",
+        "uri": "asset:///output9.webm",
+        "extension": "webm"
+      },
+      {
+        "name": "alpha-webm.webm",
+        "uri": "asset:///alpha-webm.webm",
+        "extension": "webm"
+      },
+      {
+        "name": "alpha_webm9.webm",
+        "uri": "asset:///alpha_webm9.webm",
+        "extension": "webm"
+      },
+      {
+        "name": "soccer9.webm",
+        "uri": "asset:///soccer9.webm",
+        "extension": "webm"
+      }
+      ]
+  },{
     "name": "YouTube DASH",
     "samples": [
       {

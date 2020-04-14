@@ -1,0 +1,30 @@
+{
+  "buildFiles": [
+    "/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/src/main/jni/Android.mk",
+    "/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/src/main/jni/Application.mk"
+  ],
+  "cleanCommands": [
+    "/media/zx/UBUNTU/Developer/android-ndk-r14b/ndk-build NDK_PROJECT_PATH\u003dnull APP_BUILD_SCRIPT\u003d/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/src/main/jni/Android.mk NDK_APPLICATION_MK\u003d/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/src/main/jni/Application.mk APP_ABI\u003darmeabi-v7a NDK_ALL_ABIS\u003darmeabi-v7a NDK_DEBUG\u003d0 APP_PLATFORM\u003dandroid-16 NDK_OUT\u003d/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/buildout/intermediates/ndkBuild/release/obj NDK_LIBS_OUT\u003d/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/buildout/intermediates/ndkBuild/release/lib clean"
+  ],
+  "buildTargetsCommand": "/media/zx/UBUNTU/Developer/android-ndk-r14b/ndk-build NDK_PROJECT_PATH\u003dnull APP_BUILD_SCRIPT\u003d/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/src/main/jni/Android.mk NDK_APPLICATION_MK\u003d/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/src/main/jni/Application.mk APP_ABI\u003darmeabi-v7a NDK_ALL_ABIS\u003darmeabi-v7a NDK_DEBUG\u003d0 APP_PLATFORM\u003dandroid-16 NDK_OUT\u003d/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/buildout/intermediates/ndkBuild/release/obj NDK_LIBS_OUT\u003d/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/buildout/intermediates/ndkBuild/release/lib {LIST_OF_TARGETS_TO_BUILD}",
+  "libraries": {
+    "vpxV2JNI-release-armeabi-v7a": {
+      "artifactName": "vpxV2JNI",
+      "buildCommand": "/media/zx/UBUNTU/Developer/android-ndk-r14b/ndk-build NDK_PROJECT_PATH\u003dnull APP_BUILD_SCRIPT\u003d/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/src/main/jni/Android.mk NDK_APPLICATION_MK\u003d/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/src/main/jni/Application.mk APP_ABI\u003darmeabi-v7a NDK_ALL_ABIS\u003darmeabi-v7a NDK_DEBUG\u003d0 APP_PLATFORM\u003dandroid-16 NDK_OUT\u003d/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/buildout/intermediates/ndkBuild/release/obj NDK_LIBS_OUT\u003d/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/buildout/intermediates/ndkBuild/release/lib /media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/buildout/intermediates/ndkBuild/release/obj/local/armeabi-v7a/libvpxV2JNI.so",
+      "abi": "armeabi-v7a",
+      "output": "/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/buildout/intermediates/ndkBuild/release/obj/local/armeabi-v7a/libvpxV2JNI.so"
+    },
+    "vpx-release-armeabi-v7a": {
+      "artifactName": "vpx",
+      "buildCommand": "/media/zx/UBUNTU/Developer/android-ndk-r14b/ndk-build NDK_PROJECT_PATH\u003dnull APP_BUILD_SCRIPT\u003d/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/src/main/jni/Android.mk NDK_APPLICATION_MK\u003d/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/src/main/jni/Application.mk APP_ABI\u003darmeabi-v7a NDK_ALL_ABIS\u003darmeabi-v7a NDK_DEBUG\u003d0 APP_PLATFORM\u003dandroid-16 NDK_OUT\u003d/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/buildout/intermediates/ndkBuild/release/obj NDK_LIBS_OUT\u003d/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/buildout/intermediates/ndkBuild/release/lib /media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/buildout/intermediates/ndkBuild/release/obj/local/armeabi-v7a/libvpx.so",
+      "abi": "armeabi-v7a",
+      "output": "/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/buildout/intermediates/ndkBuild/release/obj/local/armeabi-v7a/libvpx.so"
+    },
+    "cpufeatures-release-armeabi-v7a": {
+      "artifactName": "cpufeatures",
+      "buildCommand": "/media/zx/UBUNTU/Developer/android-ndk-r14b/ndk-build NDK_PROJECT_PATH\u003dnull APP_BUILD_SCRIPT\u003d/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/src/main/jni/Android.mk NDK_APPLICATION_MK\u003d/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/src/main/jni/Application.mk APP_ABI\u003darmeabi-v7a NDK_ALL_ABIS\u003darmeabi-v7a NDK_DEBUG\u003d0 APP_PLATFORM\u003dandroid-16 NDK_OUT\u003d/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/buildout/intermediates/ndkBuild/release/obj NDK_LIBS_OUT\u003d/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/buildout/intermediates/ndkBuild/release/lib /media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/buildout/intermediates/ndkBuild/release/obj/local/armeabi-v7a/libcpufeatures.a",
+      "abi": "armeabi-v7a",
+      "output": "/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/buildout/intermediates/ndkBuild/release/obj/local/armeabi-v7a/libcpufeatures.a"
+    }
+  }
+}

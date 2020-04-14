@@ -46,6 +46,8 @@ public class VideoDecoderOutputBuffer extends OutputBuffer {
 
   /** Decoder private data. */
   public int decoderPrivate;
+  /** Decoder private data. */
+  public int decoderPrivateAlpha;
 
   /** Output mode. */
   @C.VideoOutputMode public int mode;
@@ -128,7 +130,8 @@ public class VideoDecoderOutputBuffer extends OutputBuffer {
     }
     int yLength = yStride * height;
     int uvLength = uvStride * uvHeight;
-    int minimumYuvSize = yLength + (uvLength * 2);
+    int aLength = yLength;
+    int minimumYuvSize = yLength + (uvLength * 2)+aLength;
     if (!isSafeToMultiply(uvLength, 2) || minimumYuvSize < yLength) {
       return false;
     }
@@ -142,7 +145,7 @@ public class VideoDecoderOutputBuffer extends OutputBuffer {
     }
 
     if (yuvPlanes == null) {
-      yuvPlanes = new ByteBuffer[3];
+      yuvPlanes = new ByteBuffer[4];
     }
 
     ByteBuffer data = this.data;
@@ -157,12 +160,16 @@ public class VideoDecoderOutputBuffer extends OutputBuffer {
     data.position(yLength + uvLength);
     yuvPlanes[2] = data.slice();
     yuvPlanes[2].limit(uvLength);
+    data.position(yLength + uvLength*2);
+    yuvPlanes[3] = data.slice();
+    yuvPlanes[3].limit(yLength);
     if (yuvStrides == null) {
-      yuvStrides = new int[3];
+      yuvStrides = new int[4];
     }
     yuvStrides[0] = yStride;
     yuvStrides[1] = uvStride;
     yuvStrides[2] = uvStride;
+    yuvStrides[3] = yStride;
     return true;
   }
 

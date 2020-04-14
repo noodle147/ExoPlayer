@@ -23,6 +23,7 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.PixelFormat;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -427,7 +428,9 @@ public class PlayerView extends FrameLayout implements AdsLoader.AdViewProvider 
               ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
       switch (surfaceType) {
         case SURFACE_TYPE_TEXTURE_VIEW:
-          surfaceView = new TextureView(context);
+          TextureView  tv= new TextureView(context);
+          surfaceView = tv;
+          tv.setOpaque(false);
           break;
         case SURFACE_TYPE_SPHERICAL_GL_SURFACE_VIEW:
           SphericalGLSurfaceView sphericalGLSurfaceView = new SphericalGLSurfaceView(context);
@@ -439,7 +442,10 @@ public class PlayerView extends FrameLayout implements AdsLoader.AdViewProvider 
           surfaceView = new VideoDecoderGLSurfaceView(context);
           break;
         default:
-          surfaceView = new SurfaceView(context);
+          SurfaceView sv = new SurfaceView(context);
+          surfaceView = sv;
+          sv.setZOrderOnTop(true);//将view放到顶端
+          sv.getHolder().setFormat(PixelFormat.TRANSLUCENT);
           break;
       }
       surfaceView.setLayoutParams(params);

@@ -1,0 +1,4 @@
+Android NDK: WARNING: Unsupported source file extensions in /media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/src/main/jni/Android.mk for module vpx    
+Android NDK:   /media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/src/main/jni/libvpx/third_party/libyuv/source/row_neon.c.neonc /media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/src/main/jni/libvpx/third_party/libyuv/source/scale_neon.c.neonc    
+make: Nothing to be done for `vpx'.
+make: Nothing to be done for `vpxV2JNI'.
