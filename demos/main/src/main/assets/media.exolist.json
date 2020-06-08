@@ -3,8 +3,12 @@
     "name": "LOCAL VP9",
     "samples": [
       {
-        "name": "a.webm",
-        "uri": "asset:///a.webm",
+        "name": "ae_vp9.webm",
+        "uri": "asset:///ae_vp9.webm",
+        "extension": "webm"
+      },{
+        "name": "bbb_vp9.webm",
+        "uri": "asset:///bbb_vp9.webm",
         "extension": "webm"
       },{
         "name": "mov_to_vp9.webm",

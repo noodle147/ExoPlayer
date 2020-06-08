@@ -59,7 +59,7 @@ public class VideoDecoderOutputBuffer extends OutputBuffer {
   @Nullable public ColorInfo colorInfo;
 
   /** YUV planes for YUV mode. */
-  @Nullable public ByteBuffer[] yuvPlanes;
+  @Nullable public ByteBuffer[] yuvaPlanes;
 
   @Nullable public int[] yuvStrides;
   public int colorspace;
@@ -144,12 +144,12 @@ public class VideoDecoderOutputBuffer extends OutputBuffer {
       data.limit(minimumYuvSize);
     }
 
-    if (yuvPlanes == null) {
-      yuvPlanes = new ByteBuffer[4];
+    if (yuvaPlanes == null) {
+      yuvaPlanes = new ByteBuffer[4];
     }
 
     ByteBuffer data = this.data;
-    ByteBuffer[] yuvPlanes = this.yuvPlanes;
+    ByteBuffer[] yuvPlanes = this.yuvaPlanes;
 
     // Rewrapping has to be done on every frame since the stride might have changed.
     yuvPlanes[0] = data.slice();

@@ -20,6 +20,7 @@ import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ParserException;
 import com.google.android.exoplayer2.extractor.ExtractorInput;
 import com.google.android.exoplayer2.util.Assertions;
+import com.google.android.exoplayer2.util.Log;
 import java.io.EOFException;
 import java.io.IOException;
 import java.lang.annotation.Documented;
@@ -139,8 +140,10 @@ import java.util.ArrayDeque;
           elementState = ELEMENT_STATE_READ_ID;
           return true;
         case EbmlProcessor.ELEMENT_TYPE_UNKNOWN:
-          input.skipFully((int) elementContentSize);
+//          input.skipFully((int) elementContentSize);
           elementState = ELEMENT_STATE_READ_ID;
+
+          Log.i("UNKNOWN ELEMENT:",String.valueOf(elementId)+"|"+readString(input, (int) elementContentSize));
           break;
         default:
           throw new ParserException("Invalid element type " + type);

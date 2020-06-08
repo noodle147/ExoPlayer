@@ -671,7 +671,7 @@ DECODER_FUNC(jint, vpxGetFrame, jlong jContext, jobject jOutputBuffer, jboolean 
       // buffers. This is insignificant for smaller videos but takes ~1.5ms
       // for 1080p clips. So this should eventually be gotten rid of.
       if (jIsAlpha) {
-        memcpy(data + yLength + uvLength * 2, img->planes[VPX_PLANE_Y], yLength);
+        memcpy(data + yLength + uvLength * 2, img->planes[VPX_PLANE_Y], aLength);
       } else {
         memcpy(data, img->planes[VPX_PLANE_Y], yLength);
         memcpy(data + yLength, img->planes[VPX_PLANE_U], uvLength);
@@ -750,11 +750,9 @@ DECODER_FUNC(jint, vpxRenderFrame, jlong jContext, jobject jSurface,
     const uint8_t *src_base = reinterpret_cast<uint8_t *>(srcBuffer->planes[VPX_PLANE_Y]);
     const uint8_t *src_u_base = reinterpret_cast<uint8_t *>(srcBuffer->planes[VPX_PLANE_U]);
     const uint8_t *src_v_base = reinterpret_cast<uint8_t *>(srcBuffer->planes[VPX_PLANE_V]);
-//    const uint8_t *src_a_base = reinterpret_cast<uint8_t *>(srcBuffer->planes[VPX_PLANE_ALPHA]);
     if (alphaId >= 0) {
       JniFrameBuffer *srcAlphaBuffer = context->buffer_manager->get_buffer(alphaId);
       const int src_a_stride = srcAlphaBuffer->stride[VPX_PLANE_Y];
-//      LOGE("a:%d %d %d %d ", src_a_stride, src_y_stride, src_uv_stride, kHalPixelFormatYV12);
       const uint8_t *src_a_base = reinterpret_cast<uint8_t *>(srcAlphaBuffer->planes[VPX_PLANE_Y]);
       libyuv::I420AlphaToARGB(src_base,
                               src_y_stride,
@@ -784,14 +782,6 @@ DECODER_FUNC(jint, vpxRenderFrame, jlong jContext, jobject jSurface,
 
     }
 
-
-
-//        memset(srcBuffer->planes[VPX_PLANE_ALPHA],200,src_a_stride*context->height);
-//      memset(srcBuffer->planes[VPX_PLANE_ALPHA],200,src_a_stride*context->height/2);
-
-
-//        libyuv::I420ToARGB(src_base, src_y_stride, src_v_base, src_uv_stride, src_u_base, src_uv_stride, dest_base, context->width*4,context->width,context->height);
-//libyuv::I420ToRGB24(src_base, src_y_stride, src_v_base, src_uv_stride, src_u_base, src_uv_stride, dest_base, context->width*4,context->width,context->height);
   } else {
     // Y
     const size_t src_y_stride = srcBuffer->stride[VPX_PLANE_Y];
@@ -846,7 +836,11 @@ DECODER_FUNC(void, vpxReleaseFrame, jlong jContext, jobject jOutputBuffer) {
 
 DECODER_FUNC(jstring, vpxGetErrorMessage, jlong jContext) {
   JniCtx *const context = reinterpret_cast<JniCtx *>(jContext);
+  if(context->alpha_decoder->err!=VPX_CODEC_OK){
+    return env->NewStringUTF(vpx_codec_error(context->alpha_decoder));
+  }
   return env->NewStringUTF(vpx_codec_error(context->decoder));
+
 }
 
 DECODER_FUNC(jint, vpxGetErrorCode, jlong jContext) { return errorCode; }
