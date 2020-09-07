@@ -5,6 +5,8 @@ ExoPlayer transparency support with vp9!
 https://github.com/zxzx74147/ExoPlayer/tree/dev-v2-r2.11.8-transparency
 * How to use:
 https://github.com/zxzx74147/ExoPlayer/blob/dev-v2-r2.11.8-transparency/USING.md
+* Demo apk
+https://github.com/zxzx74147/ExoPlayer/releases/download/r2.11.8_transparency/demo-withExtensions-release.apk
 
 
 # ExoPlayer #
