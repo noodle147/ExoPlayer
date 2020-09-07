@@ -1,42 +1,15 @@
 [
   {
-    "name": "LOCAL VP9",
+    "name": "LOCAL VP9 WITH ALPHA",
     "samples": [
       {
-        "name": "ae_vp9.webm",
-        "uri": "asset:///ae_vp9.webm",
-        "extension": "webm"
-      },{
-        "name": "bbb_vp9.webm",
-        "uri": "asset:///bbb_vp9.webm",
-        "extension": "webm"
-      },{
-        "name": "mov_to_vp9.webm",
-        "uri": "asset:///mov_to_vp9.webm",
+        "name": "color_hearts.webm",
+        "uri": "asset:///color_hearts.webm",
         "extension": "webm"
       },
       {
-        "name": "red_ball.webm",
-        "uri": "asset:///red_ball.webm",
-        "extension": "webm"
-      },
-      {
-        "name": "output.webm",
-        "uri": "asset:///output.webm",
-        "extension": "webm"
-      },{
-        "name": "output9.webm",
-        "uri": "asset:///output9.webm",
-        "extension": "webm"
-      },
-      {
-        "name": "alpha-webm.webm",
-        "uri": "asset:///alpha-webm.webm",
-        "extension": "webm"
-      },
-      {
-        "name": "alpha_webm9.webm",
-        "uri": "asset:///alpha_webm9.webm",
+        "name": "ios_wwdc_demo.webm",
+        "uri": "asset:///ios_wwdc_demo.webm",
         "extension": "webm"
       },
       {
@@ -44,8 +17,9 @@
         "uri": "asset:///soccer9.webm",
         "extension": "webm"
       }
-      ]
-  },{
+    ]
+  },
+  {
     "name": "YouTube DASH",
     "samples": [
       {

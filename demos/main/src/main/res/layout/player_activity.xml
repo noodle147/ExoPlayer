@@ -18,7 +18,7 @@
   android:id="@+id/root"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:background="@drawable/muban"
+  android:background="@drawable/flower"
   android:keepScreenOn="true">
 
   <LinearLayout
@@ -60,4 +60,8 @@
     app:surface_type="texture_view"
     android:layout_height="match_parent" />
 
+  <ImageView
+    android:layout_width="match_parent"
+    android:id="@+id/preview"
+    android:layout_height="wrap_content"/>
 </FrameLayout>

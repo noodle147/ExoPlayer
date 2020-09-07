@@ -544,9 +544,9 @@ DECODER_FUNC(jlong,
              jint len,
              jobject encoded_supplemental_data,
              jint encoded_supplemental_data_len) {
-  LOGE("vpx_codec_decode() log(vpxDecode2), len= %d,supplemental_len= %d",
-       len,
-       encoded_supplemental_data_len);
+//  LOGE("vpx_codec_decode() log(vpxDecode2), len= %d,supplemental_len= %d",
+//       len,
+//       encoded_supplemental_data_len);
   JniCtx *const context = reinterpret_cast<JniCtx *>(jContext);
   const uint8_t *const buffer =
       reinterpret_cast<const uint8_t *>(env->GetDirectBufferAddress(encoded));

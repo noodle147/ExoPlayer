@@ -79,3 +79,5 @@ extensions/cronet/libs/*
 #vp9
 extensions/vp9/.c**
 extensions/vp9/buildout
+/extensions/vp9/.cxx/
+/extensions/vp9/.cxx/

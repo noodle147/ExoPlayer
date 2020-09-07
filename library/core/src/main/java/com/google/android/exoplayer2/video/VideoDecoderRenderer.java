@@ -181,7 +181,7 @@ import javax.microedition.khronos.opengles.GL10;
           0,
           GLES20.GL_LUMINANCE,
           GLES20.GL_UNSIGNED_BYTE,
-          outputBuffer.yuvaPlanes[i]);
+          outputBuffer.yuvPlanes[i]);
     }
 
     int[] widths = new int[3];

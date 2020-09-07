@@ -45,7 +45,8 @@
     "gradleBuildOutputFolder": "/media/zx/UBUNTU/workspace/ExoPlayer/extensions/vp9/.cxx/cxx/debug",
     "isDebuggableEnabled": true,
     "validAbiList": [
-      "ARMEABI_V7A"
+      "ARMEABI_V7A",
+      "ARM64_V8A"
     ],
     "buildTargetSet": []
   },

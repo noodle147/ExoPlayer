@@ -46,7 +46,7 @@ public class VideoDecoderOutputBuffer extends OutputBuffer {
 
   /** Decoder private data. */
   public int decoderPrivate;
-  /** Decoder private data. */
+  /** Decoder private alpha data. */
   public int decoderPrivateAlpha;
 
   /** Output mode. */
@@ -59,7 +59,7 @@ public class VideoDecoderOutputBuffer extends OutputBuffer {
   @Nullable public ColorInfo colorInfo;
 
   /** YUV planes for YUV mode. */
-  @Nullable public ByteBuffer[] yuvaPlanes;
+  @Nullable public ByteBuffer[] yuvPlanes;
 
   @Nullable public int[] yuvStrides;
   public int colorspace;
@@ -130,8 +130,7 @@ public class VideoDecoderOutputBuffer extends OutputBuffer {
     }
     int yLength = yStride * height;
     int uvLength = uvStride * uvHeight;
-    int aLength = yLength;
-    int minimumYuvSize = yLength + (uvLength * 2)+aLength;
+    int minimumYuvSize = yLength + (uvLength * 2);
     if (!isSafeToMultiply(uvLength, 2) || minimumYuvSize < yLength) {
       return false;
     }
@@ -144,12 +143,12 @@ public class VideoDecoderOutputBuffer extends OutputBuffer {
       data.limit(minimumYuvSize);
     }
 
-    if (yuvaPlanes == null) {
-      yuvaPlanes = new ByteBuffer[4];
+    if (yuvPlanes == null) {
+      yuvPlanes = new ByteBuffer[3];
     }
 
     ByteBuffer data = this.data;
-    ByteBuffer[] yuvPlanes = this.yuvaPlanes;
+    ByteBuffer[] yuvPlanes = this.yuvPlanes;
 
     // Rewrapping has to be done on every frame since the stride might have changed.
     yuvPlanes[0] = data.slice();
@@ -160,16 +159,12 @@ public class VideoDecoderOutputBuffer extends OutputBuffer {
     data.position(yLength + uvLength);
     yuvPlanes[2] = data.slice();
     yuvPlanes[2].limit(uvLength);
-    data.position(yLength + uvLength*2);
-    yuvPlanes[3] = data.slice();
-    yuvPlanes[3].limit(yLength);
     if (yuvStrides == null) {
-      yuvStrides = new int[4];
+      yuvStrides = new int[3];
     }
     yuvStrides[0] = yStride;
     yuvStrides[1] = uvStride;
     yuvStrides[2] = uvStride;
-    yuvStrides[3] = yStride;
     return true;
   }
 
