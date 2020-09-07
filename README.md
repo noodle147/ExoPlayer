@@ -1,6 +1,10 @@
-# ExoPlayer #
+# Using ExoPlayer With Transparency Support #
 
-ExoPlayer alpha channel support with vp9!
+ExoPlayer transparency support with vp9!
+The branch is:
+https://github.com/zxzx74147/ExoPlayer/tree/dev-v2-r2.11.8-transparency
+How to use:
+https://github.com/zxzx74147/ExoPlayer/blob/dev-v2-r2.11.8-transparency/USING.md
 
 
 # ExoPlayer #
