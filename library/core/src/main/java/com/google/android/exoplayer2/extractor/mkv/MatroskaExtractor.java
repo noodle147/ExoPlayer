@@ -219,11 +219,14 @@ public class MatroskaExtractor implements Extractor {
   private static final int ID_WHITE_POINT_CHROMATICITY_Y = 0x55D8;
   private static final int ID_LUMNINANCE_MAX = 0x55D9;
   private static final int ID_LUMNINANCE_MIN = 0x55DA;
+  private static final int ID_VP9_META = 0x1254c367;
+  private static final int ID_VP9_META_ITEM = 0x7373;
 
   /**
    * BlockAddID value for ITU T.35 metadata in a VP9 track. See also
    * https://www.webmproject.org/docs/container/.
    */
+  private static final int BLOCK_ADDITIONAL_ID_VP9_ALPHA = 1;
   private static final int BLOCK_ADDITIONAL_ID_VP9_ITU_T_35 = 4;
 
   private static final int LACING_NONE = 0;
@@ -498,6 +501,8 @@ public class MatroskaExtractor implements Extractor {
       case ID_PROJECTION:
       case ID_COLOUR:
       case ID_MASTERING_METADATA:
+      case ID_VP9_META:
+      case ID_VP9_META_ITEM:
         return EbmlProcessor.ELEMENT_TYPE_MASTER;
       case ID_EBML_READ_VERSION:
       case ID_DOC_TYPE_READ_VERSION:
@@ -720,6 +725,9 @@ public class MatroskaExtractor implements Extractor {
         if (isCodecSupported(currentTrack.codecId)) {
           currentTrack.initializeOutput(extractorOutput, currentTrack.number);
           tracks.put(currentTrack.number, currentTrack);
+        }
+        if(CODEC_ID_VP9.equals(currentTrack.codecId)){
+          currentTrack.maxBlockAdditionId=Math.max(currentTrack.maxBlockAdditionId,1);
         }
         currentTrack = null;
         break;
@@ -950,6 +958,7 @@ public class MatroskaExtractor implements Extractor {
         }
         break;
       case ID_BLOCK_ADD_ID:
+
         blockAdditionalId = (int) value;
         break;
       default:
@@ -1230,7 +1239,7 @@ public class MatroskaExtractor implements Extractor {
   protected void handleBlockAdditionalData(
       Track track, int blockAdditionalId, ExtractorInput input, int contentSize)
       throws IOException, InterruptedException {
-    if (blockAdditionalId == BLOCK_ADDITIONAL_ID_VP9_ITU_T_35
+    if (blockAdditionalId == BLOCK_ADDITIONAL_ID_VP9_ITU_T_35 || blockAdditionalId ==BLOCK_ADDITIONAL_ID_VP9_ALPHA
         && CODEC_ID_VP9.equals(track.codecId)) {
       blockAdditionalData.reset(contentSize);
       input.readFully(blockAdditionalData.data, 0, contentSize);

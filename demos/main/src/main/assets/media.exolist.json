@@ -1,5 +1,25 @@
 [
   {
+    "name": "LOCAL VP9 WITH ALPHA",
+    "samples": [
+      {
+        "name": "color_hearts.webm",
+        "uri": "asset:///color_hearts.webm",
+        "extension": "webm"
+      },
+      {
+        "name": "ios_wwdc_demo.webm",
+        "uri": "asset:///ios_wwdc_demo.webm",
+        "extension": "webm"
+      },
+      {
+        "name": "soccer9.webm",
+        "uri": "asset:///soccer9.webm",
+        "extension": "webm"
+      }
+    ]
+  },
+  {
     "name": "YouTube DASH",
     "samples": [
       {

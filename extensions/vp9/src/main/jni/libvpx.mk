@@ -34,8 +34,32 @@ LOCAL_SRC_FILES := libvpx_android_configs/$(TARGET_ARCH_ABI)/vpx_config.c
 LOCAL_SRC_FILES += $(addprefix libvpx/, $(filter-out vpx_config.c, \
                      $(filter %.c, $(libvpx_codec_srcs))))
 
-# include assembly files if they exist
-# "%.asm.[sS]" covers neon assembly and "%.asm" covers x86 assembly
+
+# #libyuv
+LOCAL_C_INCLUDES +=$(LOCAL_PATH)/libvpx/third_party/libyuv/include
+LOCAL_SRC_FILES +=  $(LOCAL_PATH)/libvpx/third_party/libyuv/source/cpu_id.cc \
+                $(LOCAL_PATH)/libvpx/third_party/libyuv/source/planar_functions.cc \
+                $(LOCAL_PATH)/libvpx/third_party/libyuv/source/row_any.cc \
+                $(LOCAL_PATH)/libvpx/third_party/libyuv/source/row_common.cc \
+                $(LOCAL_PATH)/libvpx/third_party/libyuv/source/row_gcc.cc \
+                $(LOCAL_PATH)/libvpx/third_party/libyuv/source/row_msa.cc \
+                $(LOCAL_PATH)/libvpx/third_party/libyuv/source/row_neon.cc \
+                $(LOCAL_PATH)/libvpx/third_party/libyuv/source/row_neon64.cc \
+                $(LOCAL_PATH)/libvpx/third_party/libyuv/source/row_win.cc \
+                $(LOCAL_PATH)/libvpx/third_party/libyuv/source/scale.cc \
+                $(LOCAL_PATH)/libvpx/third_party/libyuv/source/scale_any.cc \
+                $(LOCAL_PATH)/libvpx/third_party/libyuv/source/scale_common.cc \
+                $(LOCAL_PATH)/libvpx/third_party/libyuv/source/scale_gcc.cc \
+                $(LOCAL_PATH)/libvpx/third_party/libyuv/source/scale_msa.cc \
+                $(LOCAL_PATH)/libvpx/third_party/libyuv/source/scale_neon.cc \
+                $(LOCAL_PATH)/libvpx/third_party/libyuv/source/scale_neon64.cc \
+                $(LOCAL_PATH)/libvpx/third_party/libyuv/source/scale_win.cc \
+                $(LOCAL_PATH)/libvpx/third_party/libyuv/source/convert_from_argb.cc \
+                $(LOCAL_PATH)/libvpx/third_party/libyuv/source/convert.cc \
+                $(LOCAL_PATH)/libvpx/third_party/libyuv/source/convert_from.cc \
+                $(LOCAL_PATH)/libvpx/third_party/libyuv/source/convert_argb.cc \
+                 $(LOCAL_PATH)/libvpx/third_party/libyuv/source/video_common.cc \
+
 LOCAL_SRC_FILES += $(addprefix libvpx/, \
                      $(filter %.asm.s %.asm.S %.asm, $(libvpx_codec_srcs)))
 
@@ -47,7 +71,8 @@ LOCAL_SRC_FILES := $(subst .S,.S.neon,$(LOCAL_SRC_FILES))
 endif
 
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/libvpx \
-                           $(LOCAL_PATH)/libvpx/vpx
+                           $(LOCAL_PATH)/libvpx/vpx \
+                           $(LOCAL_PATH)/libvpx/third_party/libyuv/include \
 
 LOCAL_LDFLAGS := -Wl,--version-script=$(CONFIG_DIR)/libvpx.ver
 include $(BUILD_SHARED_LIBRARY)

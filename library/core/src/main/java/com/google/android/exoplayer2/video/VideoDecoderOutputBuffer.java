@@ -46,6 +46,8 @@ public class VideoDecoderOutputBuffer extends OutputBuffer {
 
   /** Decoder private data. */
   public int decoderPrivate;
+  /** Decoder private alpha data. */
+  public int decoderPrivateAlpha;
 
   /** Output mode. */
   @C.VideoOutputMode public int mode;
