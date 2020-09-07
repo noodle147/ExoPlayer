@@ -12,7 +12,7 @@ Just change git url and the branch.
 ```sh
 git clone https://github.com/zxzx74147/ExoPlayer.git
 cd ExoPlayer
-git checkout orgin-old/dev-v2-r2.11.8-transparency
+git checkout dev-v2-r2.11.8-transparency
 ```
 
 
