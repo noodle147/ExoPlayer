@@ -1,3 +1,11 @@
+# Using ExoPlayer With Transparency Support #
+
+ExoPlayer transparency support with vp9!
+* The branch is:
+https://github.com/zxzx74147/ExoPlayer/tree/dev-v2-r2.11.8-transparency
+* How to use:
+https://github.com/zxzx74147/ExoPlayer/blob/dev-v2-r2.11.8-transparency/USING.md
+
 # ExoPlayer #
 
 ExoPlayer is an application level media player for Android. It provides an
