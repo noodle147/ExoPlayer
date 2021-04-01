@@ -1,6 +1,6 @@
-*.S
+#*.S!
 *.a
-*.asm.s
+#*.asm.s!
 *.d
 *.gcda
 *.gcno
@@ -10,7 +10,7 @@
 .project
 .settings
 /*-*.mk
-/*.asm
+#/*.asm
 /*.doxy
 /*.ivf
 /*.ivf.md5

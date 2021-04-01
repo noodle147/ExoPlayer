@@ -63,8 +63,12 @@ LOCAL_SRC_FILES +=  $(LOCAL_PATH)/libvpx/third_party/libyuv/source/cpu_id.cc \
 LOCAL_SRC_FILES += $(addprefix libvpx/, \
                      $(filter %.asm.s %.asm.S %.asm, $(libvpx_codec_srcs)))
 
+$(warning $(TARGET_ARCH_ABI))
+$(warning $(findstring armeabi-v7a, $(TARGET_ARCH_ABI)))
+
 ifneq ($(findstring armeabi-v7a, $(TARGET_ARCH_ABI)),)
 # append .neon to *_neon.c and *.[sS]
+# $(warning "append .neon to *_neon.c and *.[sS]")
 LOCAL_SRC_FILES := $(subst _neon.c,_neon.c.neon,$(LOCAL_SRC_FILES))
 LOCAL_SRC_FILES := $(subst .s,.s.neon,$(LOCAL_SRC_FILES))
 LOCAL_SRC_FILES := $(subst .S,.S.neon,$(LOCAL_SRC_FILES))

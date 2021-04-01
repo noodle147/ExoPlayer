@@ -16,6 +16,11 @@
         "name": "soccer9.webm",
         "uri": "asset:///soccer9.webm",
         "extension": "webm"
+      },
+      {
+        "name": "test.webm",
+        "uri": "asset:///test.webm",
+        "extension": "webm"
       }
     ]
   },
