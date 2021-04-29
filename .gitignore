@@ -78,3 +78,6 @@ extensions/cronet/libs/*
 !extensions/cronet/libs/README.md
 /extensions/vp9/.cxx/
 /demos/main/withExtensions/
+
+.vscode
+
